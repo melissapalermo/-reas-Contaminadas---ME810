@@ -1,0 +1,56 @@
+---
+title: "ME810"
+output: pdf_document
+---
+
+```{r, echo=FALSE}
+library(readxl) #biblioteca para ler o excel
+library(knitr)
+library(ggplot2)
+data <- read_excel("C:/Users/Melissa Palermo/Documents/ME810/BASE.xlsx") #leitura dos dados
+
+dados<-data.frame(data)
+
+dados1<-dados
+
+dados1$id=0
+
+tabela<-matrix(0,832,3)
+n=1
+i=0
+j=0
+
+
+for (i in 1:832){
+   aux = 0
+   for (j in 1:n){
+       if (dados1[i, 7] == tabela[j, 2]){
+           if (dados1[i, 8] == tabela[j, 3]){
+                 dados1[i, 1] = tabela[j, 1]
+                 aux = 1;
+           }
+       }
+   }
+      if (aux == 0) {
+          tabela[n, 2] = dados1[i, 7]
+          tabela[n, 3] = dados1[i, 8]
+          dados1[i, 1] = n
+          tabela[j,1]=n
+          n=n+1
+      }
+   }
+
+#esses 2 comandos criam um arquivo em csv já pronto, pra nao ter que ficar rodando o excel sempre
+
+write.csv(dados1,file="teste.csv")
+dados<- read.csv2("C:/Users/Melissa Palermo/Documents/ME810/teste.csv",sep=",")
+
+
+
+```
+
+
+
+```{r, echo=FALSE}
+
+```
