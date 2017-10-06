@@ -64,12 +64,12 @@ plot(dados$atividade, xlab="Atividade", ylab="Número de áreas contaminadas")
 summary(dados$bairro) #número de areas contaminadas em cada bairro
 str(dados$bairro) #para saber a quantidde de bairros => 99 bairros
 
-maxbairros =  c("BARÃO GERALDO","BOA VISTA", "BONFIM", "CAMBUI", "CENTRO", "DISTRITO INDUSTRIAL", "JARDIM CHAPADÃO", "TAQUARAL", "VILA INDUSTRIAL ") #BAIRROS COM MAIS DE 15 AREAS
+maxbairros =  c("Barão GeraldoO","Boa Vista", "Bonfim", "Cambuí", "Centro", "Distrito Industrial", "Jd. Chapadão", "Taquaral", "Vila Industrial") #BAIRROS COM MAIS DE 15 AREAS
 
 maybairros =  c(length(which(dados$bairro=="BARÃO GERALDO")),length(which(dados$bairro=="BOA VISTA")),length( which(dados$bairro=="BONFIM")), length(which(dados$bairro=="CAMBUI")), length(which(dados$bairro=="CENTRO")), length(which(dados$bairro=="DISTRITO INDUSTRIAL")), length(which(dados$bairro=="JARDIM CHAPADÃO")),length( which(dados$bairro=="TAQUARAL")), length(which(dados$bairro=="VILA INDUSTRIAL"))) 
 
-plot(maxbairros, maybairros) #pq nao da certo???
- boxplot(maybairros~maxbairros)
+fator = as.factor(maxbairros)
+plot(fator, maybairros) 
 ```
 
 
