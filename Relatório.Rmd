@@ -57,23 +57,86 @@ n2016 = length(which(dados$ano==2016))
 y= c(n2011, n2012, n2013, n2014, n2015, n2016)
 x=c(2011, 2012, 2013, 2014, 2015, 2016)
 
-plot(x, y, xlab = "Ano", ylab="Númedo de áreas contaminadas" )
+plot(x, y, xlab = "Ano", ylab="Número de registros",main="Quantidade de registros por ano" )
 
-plot(dados$atividade, xlab="Atividade", ylab="Número de áreas contaminadas")
+plot(dados$atividade, xlab="Atividade", ylab="Número de registros",main="Quantidade de registros por atividade")
+```
 
-summary(dados$bairro) #número de areas contaminadas em cada bairro
+
+Como temos 99 bairros, não dá para analisar separadamente por bairro, então gostaríamos que você agrupasse em no máximo 4 regiões. Por exemplo: Norte, Sul, Leste, Oeste ou Central, Não Central. Favor criar uma nova coluna no excel com essa informação em cada linha.
+
+```{r, echo=FALSE }
+
 str(dados$bairro) #para saber a quantidde de bairros => 99 bairros
-
-maxbairros =  c("Barão GeraldoO","Boa Vista", "Bonfim", "Cambuí", "Centro", "Distrito Industrial", "Jd. Chapadão", "Taquaral", "Vila Industrial") #BAIRROS COM MAIS DE 15 AREAS
+table(dados$bairro)
+maxbairros =  c("Barão Geraldo","Boa Vista", "Bonfim", "Cambuí", "Centro", "Distrito Industrial", "Jd. Chapadão", "Taquaral", "Vila Industrial") #BAIRROS COM MAIS DE 15 AREAS
 
 maybairros =  c(length(which(dados$bairro=="BARÃO GERALDO")),length(which(dados$bairro=="BOA VISTA")),length( which(dados$bairro=="BONFIM")), length(which(dados$bairro=="CAMBUI")), length(which(dados$bairro=="CENTRO")), length(which(dados$bairro=="DISTRITO INDUSTRIAL")), length(which(dados$bairro=="JARDIM CHAPADÃO")),length( which(dados$bairro=="TAQUARAL")), length(which(dados$bairro=="VILA INDUSTRIAL"))) 
 
 fator = as.factor(maxbairros)
 plot(fator, maybairros) 
+
 ```
 
+
+Tem como você agrupar essas categorias em apenas duas opções: contaminada e não contaminada?
 
 
 ```{r, echo=FALSE}
+table(dados$classif)
 
 ```
+
+1. Qual o significado da variável "reutiliza"? Você acha que ela pode ajudar a explicar o aumento de áreas contaminadas?
+
+```{r}
+table(dados$reutiliza)
+```
+
+2. Note que na variável "etapa_gere" tem problemas de digitação. Você acha que ela pode ajudar a explicar o aumento de áreas contaminadas? Qual o significado da variável? Se ela for importante, peço que corrija os erros de digitação.
+```{r}
+table(dados$etapa_gere)
+```
+
+3.Note que na variável "etapa_gere1" tem problemas de digitação. Você acha que ela pode ajudar a explicar o aumento de áreas contaminadas? Qual o significado da variável? Se ela for importante, peço que corrija os erros de digitação.
+
+```{r}
+table(dados$etapa_ge_1)
+```
+
+4.Note que na variável "fonte_cont" tem problemas de digitação. Você acha que ela pode ajudar a explicar o aumento de áreas contaminadas? Qual o significado da variável? Se ela for importante, peço que corrija os erros de digitação.
+
+```{r}
+table(dados$fonte_cont)
+```
+
+5.Note que na variável "meios_impa" tem problemas de digitação. Você acha que ela pode ajudar a explicar o aumento de áreas contaminadas? Qual o significado da variável? Se ela for importante, peço que corrija os erros de digitação.
+
+```{r}
+table(dados$meios_impa)
+```
+
+6. Note que na variável "contaminan" tem problemas de digitação. Você que ela pode ajudr a explicar o aumento de áreas contaminadas? Qual o significado da variável? Se ela for importante, peço que corrija os erros de digitação.
+```{r}
+table(dados$contaminan)
+```
+
+7. Note que na variável "med_emerge" tem problemas de digitação. Você que ela pode ajudr a explicar o aumento de áreas contaminadas? Qual o significado da variável? Se ela for importante, peço que corrija os erros de digitação.
+
+```{r}
+table(dados$med_emerge)
+```
+
+8. Note que na variável "med_instit" tem problemas de digitação. Você que ela pode ajudr a explicar o aumento de áreas contaminadas? Qual o significado da variável? Se ela for importante, peço que corrija os erros de digitação.
+
+```{r}
+table(dados$med_instit)
+```
+
+9. Note que na variável "med_remedi" tem problemas de digitação. Você que ela pode ajudr a explicar o aumento de áreas contaminadas? Qual o significado da variável? Se ela for importante, peço que corrija os erros de digitação.
+
+
+```{r}
+table(dados$med_remedi)
+```
+
