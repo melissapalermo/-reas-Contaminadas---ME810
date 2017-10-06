@@ -9,7 +9,7 @@ library(readxl) #biblioteca para ler o excel
 library(knitr)
 library(ggplot2)
 
-data <- read_excel("C:/Users/Melissa Palermo/Documents/ME810/BASE.xlsx") #leitura dos dados
+data <- read_excel("C:/Users/Melissa Palermo/Documents/GitHub/Areas-Contaminadas---ME810/BASE.xlsx") #leitura dos dados
 
 dados<-data.frame(data)
 
@@ -45,7 +45,7 @@ for (i in 1:832){
 #esses 2 comandos criam um arquivo em csv já pronto, pra nao ter que ficar rodando o excel sempre
 
 write.csv(dados1,file="teste.csv")
-dados<- read.csv2("C:/Users/Melissa Palermo/Documents/ME810/teste.csv",sep=",")
+dados<- read.csv2("C:/Users/Melissa Palermo/Documents/GitHub/Areas-Contaminadas---ME810/teste.csv",sep=",")
 plot(dados$atividade)
 n2011 = length(which(dados$ano==2011))
 n2012 = length(which(dados$ano==2012))
