@@ -61,7 +61,8 @@ plot(x, y, xlab = "Ano", ylab="Númedo de áreas contaminadas" )
 
 plot(dados$atividade, xlab="Atividade", ylab="Número de áreas contaminadas")
 
-summary(dados$bairro)
+summary(dados$bairro) #número de areas contaminadas em cada bairro
+str(dados$bairro) #para saber a quantidde de bairros => 99 bairros
 ```
 
 
