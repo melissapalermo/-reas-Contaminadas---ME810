@@ -1,12 +1,14 @@
 ---
-title: "ME810"
-output: pdf_document
+title: "ME810 - Áreas Contaminadas"
+output:
+  html_document: default
 ---
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning=FALSE}
 library(readxl) #biblioteca para ler o excel
 library(knitr)
 library(ggplot2)
+
 data <- read_excel("C:/Users/Melissa Palermo/Documents/ME810/BASE.xlsx") #leitura dos dados
 
 dados<-data.frame(data)
@@ -44,8 +46,13 @@ for (i in 1:832){
 
 write.csv(dados1,file="teste.csv")
 dados<- read.csv2("C:/Users/Melissa Palermo/Documents/ME810/teste.csv",sep=",")
-
-
+plot(dados$atividade)
+n2011 = length(which(dados$ano==2011))
+n2012 = length(which(dados$ano==2012))
+n2013 = length(which(dados$ano==2013))
+n2014 = length(which(dados$ano==2014))
+n2015 = length(which(dados$ano==2015))
+n2016 = length(which(dados$ano==2016))
 
 ```
 
