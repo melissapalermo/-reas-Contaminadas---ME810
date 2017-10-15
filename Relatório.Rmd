@@ -26,16 +26,16 @@ j=0
 for (i in 1:832){
    aux = 0
    for (j in 1:n){
-       if (dados1[i, 7] == tabela[j, 2]){
-           if (dados1[i, 8] == tabela[j, 3]){
+       if (dados1[i, 5] == tabela[j, 2]){
+           if (dados1[i, 6] == tabela[j, 3]){
                  dados1[i, 1] = tabela[j, 1]
                  aux = 1;
            }
        }
    }
       if (aux == 0) {
-          tabela[n, 2] = dados1[i, 7]
-          tabela[n, 3] = dados1[i, 8]
+          tabela[n, 2] = dados1[i, 5]
+          tabela[n, 3] = dados1[i, 6]
           dados1[i, 1] = n
           tabela[j,1]=n
           n=n+1
