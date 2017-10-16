@@ -1,0 +1,143 @@
+---
+title: "ME810 - Áreas Contaminadas"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r, echo=FALSE, warning=FALSE}
+library(readxl) #biblioteca para ler o excel
+library(knitr)
+library(ggplot2)
+
+data <- read_excel("C:/Users/Bruna Marques/Desktop/Areas-Contaminadas---ME810-master/BASE.xlsx") #leitura dos dados
+
+dados<-data.frame(data)
+
+dados1<-dados
+
+dados1$id=0
+
+tabela<-matrix(0,832,3)
+n=1
+i=0
+j=0
+
+
+for (i in 1:832){
+   aux = 0
+   for (j in 1:n){
+       if (dados1[i, 5] == tabela[j, 2]){
+           if (dados1[i, 6] == tabela[j, 3]){
+                 dados1[i, 1] = tabela[j, 1]
+                 aux = 1;
+           }
+       }
+   }
+      if (aux == 0) {
+          tabela[n, 2] = dados1[i, 5]
+          tabela[n, 3] = dados1[i, 6]
+          dados1[i, 1] = n
+          tabela[j,1]=n
+          n=n+1
+      }
+   }
+
+#esses 2 comandos criam um arquivo em csv já pronto, pra nao ter que ficar rodando o excel sempre
+
+write.csv(dados1,file="teste.csv")
+dados<- read.csv2("C:/Users/Bruna Marques/Desktop/Areas-Contaminadas---ME810-master/teste.csv",sep=",")
+
+n2011 = length(which(dados$ano==2011))
+n2012 = length(which(dados$ano==2012))
+n2013 = length(which(dados$ano==2013))
+n2014 = length(which(dados$ano==2014))
+n2015 = length(which(dados$ano==2015))
+n2016 = length(which(dados$ano==2016))
+
+y1= c(n2011, n2012, n2013, n2014, n2015, n2016)
+x1=c(2011, 2012, 2013, 2014, 2015, 2016)
+
+data1=data.frame(x1,y1)
+
+#plot(x, y, xlab = "Ano", ylab="Número de registros",main="Quantidade de registros por ano" )
+
+ggplot(data1,aes(x=x1,y=y1)) + geom_point(size=4) + labs(title="Quantidade de registros por ano",x="Ano", y = "Número de registros")
+
+#plot(dados$atividade, xlab="Atividade", ylab="Número de registros",main="Quantidade de registros por atividade")
+
+ggplot(dados, aes(as.factor(dados$atividade))) + geom_bar(width=0.6) + labs(title="Quantidade de registros por atividade", x="",y = "Número de registros")
+```
+
+
+```{r, echo=FALSE, warning=FALSE}
+posto11 = length(which((dados$ano==2011) & (dados$atividade=="Posto de Combustível")))
+posto12 = length(which((dados$ano==2012) & (dados$atividade=="Posto de Combustível")))
+posto13 = length(which((dados$ano==2013) & (dados$atividade=="Posto de Combustível")))
+posto14 = length(which((dados$ano==2014) & (dados$atividade=="Posto de Combustível")))
+posto15 = length(which((dados$ano==2015) & (dados$atividade=="Posto de Combustível")))
+posto16 = length(which((dados$ano==2016) & (dados$atividade=="Posto de Combustível")))
+
+ind11 = length(which((dados$ano==2011) & (dados$atividade=="Indústria")))
+ind12 = length(which((dados$ano==2012) & (dados$atividade=="Indústria")))
+ind13 = length(which((dados$ano==2013) & (dados$atividade=="Indústria")))
+ind14 = length(which((dados$ano==2014) & (dados$atividade=="Indústria")))
+ind15 = length(which((dados$ano==2015) & (dados$atividade=="Indústria")))
+ind16 = length(which((dados$ano==2016) & (dados$atividade=="Indústria")))
+
+com11 = length(which((dados$ano==2011) & (dados$atividade=="Comércio")))
+com12 = length(which((dados$ano==2012) & (dados$atividade=="Comércio")))
+com13 = length(which((dados$ano==2013) & (dados$atividade=="Comércio")))
+com14 = length(which((dados$ano==2014) & (dados$atividade=="Comércio")))
+com15 = length(which((dados$ano==2015) & (dados$atividade=="Comércio")))
+com16 = length(which((dados$ano==2016) & (dados$atividade=="Comércio")))
+
+res11 = length(which((dados$ano==2011) & (dados$atividade=="Resíduo")))
+res12 = length(which((dados$ano==2012) & (dados$atividade=="Resíduo")))
+res13 = length(which((dados$ano==2013) & (dados$atividade=="Resíduo")))
+res14 = length(which((dados$ano==2014) & (dados$atividade=="Resíduo")))
+res15 = length(which((dados$ano==2015) & (dados$atividade=="Resíduo")))
+res16 = length(which((dados$ano==2016) & (dados$atividade=="Resíduo")))
+
+posto=c(posto11, posto12,posto13,posto14,posto15,posto16)
+ind=c(ind11,ind12,ind13,ind14,ind15,ind16)
+com=c(com11,com12,com13,com14,com15,com16)
+res=c(res11,res12,res13,res14,res15,res16)
+
+data1=data.frame(posto,ind,com,res)
+
+ggplot(data1, aes(x=x1)) + 
+  geom_line(aes(y = data1$posto, colour = "data1$posto")) + 
+  geom_line(aes(y = data$ind, colour = "data$ind"))
+
+
+
+ggplot(dados, aes(as.factor(dados$atividade),fill=as.factor(dados$Regiao.Central))) + geom_bar(position = "dodge")
+
+
+
+```
+
+
+```{r, echo=FALSE, warning=FALSE}
+central11 = length(which((dados$ano==2011) & (dados$Regiao.Central=="S")))
+central12 = length(which((dados$ano==2012) & (dados$Regiao.Central=="S")))
+central13 = length(which((dados$ano==2013) & (dados$Regiao.Central=="S")))
+central14 = length(which((dados$ano==2014) & (dados$Regiao.Central=="S")))
+central15 = length(which((dados$ano==2015) & (dados$Regiao.Central=="S")))
+central16 = length(which((dados$ano==2016) & (dados$Regiao.Central=="S")))
+
+ncentral11 = length(which((dados$ano==2011) & (dados$Regiao.Central=="N")))
+ncentral12 = length(which((dados$ano==2012) & (dados$Regiao.Central=="N")))
+ncentral13 = length(which((dados$ano==2013) & (dados$Regiao.Central=="N")))
+ncentral14 = length(which((dados$ano==2014) & (dados$Regiao.Central=="N")))
+ncentral15 = length(which((dados$ano==2015) & (dados$Regiao.Central=="N")))
+ncentral16 = length(which((dados$ano==2016) & (dados$Regiao.Central=="N")))
+
+central=c(central11,central12,central13,central14,central15,central16)
+ncentral=c(ncentral11,ncentral12,ncentral13,ncentral14,ncentral15,ncentral16)
+
+plot(x,central)
+plot(x,ncentral)
+
+```
