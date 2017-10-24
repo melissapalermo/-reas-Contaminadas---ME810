@@ -1,0 +1,282 @@
+---
+title: "ME810 - Áreas Contaminadas"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r, echo=FALSE, warning=FALSE}
+library(readxl) #biblioteca para ler o excel
+library(knitr)
+library(ggplot2)
+
+data <- read_excel("C:/Users/ra157672/Desktop/Areas-Contaminadas---ME810-master/BASE.xlsx") #leitura dos dados
+
+dados<-data.frame(data)
+
+dados1<-dados
+
+dados1$id=0
+
+tabela<-matrix(0,832,3)
+n=1
+i=0
+j=0
+
+
+for (i in 1:832){
+   aux = 0
+   for (j in 1:n){
+       if (dados1[i, 5] == tabela[j, 2]){
+           if (dados1[i, 6] == tabela[j, 3]){
+                 dados1[i, 1] = tabela[j, 1]
+                 aux = 1;
+           }
+       }
+   }
+      if (aux == 0) {
+          tabela[n, 2] = dados1[i, 5]
+          tabela[n, 3] = dados1[i, 6]
+          dados1[i, 1] = n
+          tabela[j,1]=n
+          n=n+1
+      }
+   }
+
+#esses 2 comandos criam um arquivo em csv já pronto, pra nao ter que ficar rodando o excel sempre
+
+write.csv(dados1,file="teste.csv")
+dados<- read.csv2("C:/Users/ra157672/Desktop/Areas-Contaminadas---ME810-master/teste.csv",sep=",")
+```
+
+# Introdução
+
+  O objetivo do trabalho é verificar se o número de áreas com solo contaminado em Campinas tende a aumentar nos próximos anos. Para isso, utilizaremos os dados da CETESB, que contém registros de 2011 a 2016 com informações sobre as áreas contaminadas. Conforme conversado com a cliente, as variáveis que podem explicar o número de áreas contaminadas são: região, tipo de atividade e fontes de contaminação. Os bairros considerados como região central foram: Botafogo, Cambuí, Centro, Guanabara, Vila Industrial, Vila Itapura, e como não central os demais.
+
+  Faremos apenas uma análise descritiva dos dados (devido ao curto prazo de entrega do projeto), para começar a entender melhor como eles se comportam.
+
+# Análise Descritiva
+
+  A análise descritiva tem como objetivo começar a entender o comportamento dos dados, antes de fazer a modelagem estatística para previsão. Pela Figura 1, vemos que o número de registros de áreas contaminadas em Campinas vem aumentando ano após ano.
+
+```{r, echo=FALSE}
+
+n2011 = length(which(dados$ano==2011))
+n2012 = length(which(dados$ano==2012))
+n2013 = length(which(dados$ano==2013))
+n2014 = length(which(dados$ano==2014))
+n2015 = length(which(dados$ano==2015))
+n2016 = length(which(dados$ano==2016))
+
+y1= c(n2011, n2012, n2013, n2014, n2015, n2016)
+x1=c(2011, 2012, 2013, 2014, 2015, 2016)
+
+data1=data.frame(x1,y1)
+
+#plot(x, y, xlab = "Ano", ylab="Número de registros",main="Quantidade de registros por ano" )
+
+ggplot(data1,aes(x=x1,y=y1)) + geom_point(size=4) + labs(title="Quantidade de registros por ano",x="Ano", y = "Número de registros")
+```
+Figura 1: Gráfico de dispersão em que no eixo x temos o ano e no eixo y o número de registros. Note que o número de registros de áreas contaminadas em Campinas vem aumentando ano a ano.
+
+
+Temos um total de 832 registros em 6 anos, note pela Figura 2 que a maioria desses registros são postos de combustível.
+
+```{r, echo=FALSE}
+#plot(dados$atividade, xlab="Atividade", ylab="Número de registros",main="Quantidade de registros por atividade")
+
+ggplot(dados, aes(as.factor(dados$atividade))) + geom_bar(width=0.6) + labs(title="Quantidade de registros por atividade", x="",y = "Número de registros")
+```
+Figura 2: Quantidade de áreas contaminadas registradas nos seis anos, por atividade. O maior número de registros foram em postos de combustivél, seguido de indústria.
+
+
+
+   De acordo com a Figura 3, o número de registros em postos de combustível aumenta todo ano. Porém, vale ressaltar que a indústria teve um aumento maior que as outras atividades de 2013 para 2015. Isso causou uma mudança de patamar, uma vez que de 2011 a 2013 o número de registros estava em torno de 25 e passou para mais de 40 em 2015.
+
+```{r, echo=FALSE, warning=FALSE}
+posto11 = length(which((dados$ano==2011) & (dados$atividade=="Posto de Combustível")))
+posto12 = length(which((dados$ano==2012) & (dados$atividade=="Posto de Combustível")))
+posto13 = length(which((dados$ano==2013) & (dados$atividade=="Posto de Combustível")))
+posto14 = length(which((dados$ano==2014) & (dados$atividade=="Posto de Combustível")))
+posto15 = length(which((dados$ano==2015) & (dados$atividade=="Posto de Combustível")))
+posto16 = length(which((dados$ano==2016) & (dados$atividade=="Posto de Combustível")))
+
+ind11 = length(which((dados$ano==2011) & (dados$atividade=="Indústria")))
+ind12 = length(which((dados$ano==2012) & (dados$atividade=="Indústria")))
+ind13 = length(which((dados$ano==2013) & (dados$atividade=="Indústria")))
+ind14 = length(which((dados$ano==2014) & (dados$atividade=="Indústria")))
+ind15 = length(which((dados$ano==2015) & (dados$atividade=="Indústria")))
+ind16 = length(which((dados$ano==2016) & (dados$atividade=="Indústria")))
+
+com11 = length(which((dados$ano==2011) & (dados$atividade=="Comércio")))
+com12 = length(which((dados$ano==2012) & (dados$atividade=="Comércio")))
+com13 = length(which((dados$ano==2013) & (dados$atividade=="Comércio")))
+com14 = length(which((dados$ano==2014) & (dados$atividade=="Comércio")))
+com15 = length(which((dados$ano==2015) & (dados$atividade=="Comércio")))
+com16 = length(which((dados$ano==2016) & (dados$atividade=="Comércio")))
+
+res11 = length(which((dados$ano==2011) & (dados$atividade=="Resíduo")))
+res12 = length(which((dados$ano==2012) & (dados$atividade=="Resíduo")))
+res13 = length(which((dados$ano==2013) & (dados$atividade=="Resíduo")))
+res14 = length(which((dados$ano==2014) & (dados$atividade=="Resíduo")))
+res15 = length(which((dados$ano==2015) & (dados$atividade=="Resíduo")))
+res16 = length(which((dados$ano==2016) & (dados$atividade=="Resíduo")))
+
+
+posto=c(posto11, posto12,posto13,posto14,posto15,posto16)
+ind=c(ind11,ind12,ind13,ind14,ind15,ind16)
+com=c(com11,com12,com13,com14,com15,com16)
+res=c(res11,res12,res13,res14,res15,res16)
+
+
+Quantidade <- as.numeric(cbind(c(posto, ind, com, res)))
+
+Ano <- cbind(c(x1, x1, x1, x1))
+Atividade = NULL
+Atividade[1:6] <- c("Posto de Combustível")
+Atividade[7:12] <- c("Indústria")
+Atividade[13:18] <- c("Comércio")
+Atividade[19:24] <- c("Resíduos")
+
+
+Tabela <- cbind(as.numeric(Quantidade), Ano, Atividade)
+
+Tabela <- data.frame(Tabela)
+
+ggplot(data = Tabela, aes(x=Ano, y=Quantidade, color=Atividade)) +
+  geom_line()+ geom_point() + labs(title="Quantidade de Registros de Atividades por Ano", x="Ano",y = "Número de registros")
+
+```
+Figura 3: Quantidade de registros por atividade para cada ano. Note que o número de registros em Postos de combustível aumenta todo ano, porém atenção para o número de registros da indútria que teve um aumento alto de 2013 para 2015.
+
+
+Tabela 1: Porcentagem de registros nas regiões central e não central por ano. Observamos que proporção de registros por região variou muito pouco ao longo dos anos. 
+
+|      | Central | Não Central |
+|-----:|--------:|------------:|
+| 2011 |    0,21 |        0,79 |
+| 2012 |    0,20 |        0,80 |
+| 2013 |    0,19 |        0,81 |
+| 2014 |    0,19 |        0,81 |
+| 2015 |    0,17 |        0,83 |
+| 2016 |    0,17 |        0,83 |
+
+
+
+```{r, echo=FALSE, warning=FALSE}
+central11 = length(which((dados$ano==2011) & (dados$Região.Central=="S")))
+central12 = length(which((dados$ano==2012) & (dados$Região.Central=="S")))
+central13 = length(which((dados$ano==2013) & (dados$Região.Central=="S")))
+central14 = length(which((dados$ano==2014) & (dados$Região.Central=="S")))
+central15 = length(which((dados$ano==2015) & (dados$Região.Central=="S")))
+central16 = length(which((dados$ano==2016) & (dados$Região.Central=="S")))
+
+ncentral11 = n2011 - central11
+ncentral12 = n2012 - central12
+ncentral13 = n2013 - central13
+ncentral14 = n2014 - central14
+ncentral15 = n2015 - central15
+ncentral16 = n2016 - central16
+
+
+central=c(central11,central12,central13,central14,central15,central16)
+ncentral=c(ncentral11,ncentral12,ncentral13,ncentral14,ncentral15,ncentral16)
+
+
+central2 = central/y1
+ncentral2 = ncentral/y1
+
+#ggplot(dados,  aes(x = dados$ano)) + geom_bar(aes(weight=central2, fill = dados$Região.Central), position = 'fill') + scale_y_continuous("", breaks=NA) + scale_fill_manual(values = rev(brewer.pal(6, "Purples")))
+
+```
+
+
+
+```{r, echo=FALSE, warning=FALSE}
+arm11 = length(which((dados$ano==2011) & (dados$fonte_cont=="armazenagem e outros")))
+arm12 = length(which((dados$ano==2012) & (dados$fonte_cont=="armazenagem e outros")))
+arm13 = length(which((dados$ano==2013) & (dados$fonte_cont=="armazenagem e outros")))
+arm14 = length(which((dados$ano==2014) & (dados$fonte_cont=="armazenagem e outros")))
+arm15 = length(which((dados$ano==2015) & (dados$fonte_cont=="armazenagem e outros")))
+arm16 = length(which((dados$ano==2016) & (dados$fonte_cont=="armazenagem e outros")))
+
+desc11 = length(which((dados$ano==2011) & (dados$fonte_cont=="descarte e outros")))
+desc12 = length(which((dados$ano==2012) & (dados$fonte_cont=="descarte e outros")))
+desc13 = length(which((dados$ano==2013) & (dados$fonte_cont=="descarte e outros")))
+desc14 = length(which((dados$ano==2014) & (dados$fonte_cont=="descarte e outros")))
+desc15 = length(which((dados$ano==2015) & (dados$fonte_cont=="descarte e outros")))
+desc16 = length(which((dados$ano==2016) & (dados$fonte_cont=="descarte e outros")))
+
+descon11 = length(which((dados$ano==2011) & (dados$fonte_cont=="desconhecida")))
+descon12 = length(which((dados$ano==2012) & (dados$fonte_cont=="desconhecida")))
+descon13 = length(which((dados$ano==2013) & (dados$fonte_cont=="desconhecida")))
+descon14 = length(which((dados$ano==2014) & (dados$fonte_cont=="desconhecida")))
+descon15 = length(which((dados$ano==2015) & (dados$fonte_cont=="desconhecida")))
+descon16 = length(which((dados$ano==2016) & (dados$fonte_cont=="desconhecida")))
+
+inf11 = length(which((dados$ano==2011) & (dados$fonte_cont=="infiltração")))
+inf12 = length(which((dados$ano==2012) & (dados$fonte_cont=="infiltração")))
+inf13 = length(which((dados$ano==2013) & (dados$fonte_cont=="infiltração")))
+inf14 = length(which((dados$ano==2014) & (dados$fonte_cont=="infiltração")))
+inf15 = length(which((dados$ano==2015) & (dados$fonte_cont=="infiltração")))
+inf16 = length(which((dados$ano==2016) & (dados$fonte_cont=="infiltração")))
+
+man11 = length(which((dados$ano==2011) & (dados$fonte_cont=="manutenção")))
+man12 = length(which((dados$ano==2012) & (dados$fonte_cont=="manutenção")))
+man13 = length(which((dados$ano==2013) & (dados$fonte_cont=="manutenção")))
+man14 = length(which((dados$ano==2014) & (dados$fonte_cont=="manutenção")))
+man15 = length(which((dados$ano==2015) & (dados$fonte_cont=="manutenção")))
+man16 = length(which((dados$ano==2016) & (dados$fonte_cont=="manutenção")))
+
+pro11 = length(which((dados$ano==2011) & (dados$fonte_cont=="produção e outros")))
+pro12 = length(which((dados$ano==2012) & (dados$fonte_cont=="produção e outros")))
+pro13 = length(which((dados$ano==2013) & (dados$fonte_cont=="produção e outros")))
+pro14 = length(which((dados$ano==2014) & (dados$fonte_cont=="produção e outros")))
+pro15 = length(which((dados$ano==2015) & (dados$fonte_cont=="produção e outros")))
+pro16 = length(which((dados$ano==2016) & (dados$fonte_cont=="produção e outros")))
+
+trat11 = length(which((dados$ano==2011) & (dados$fonte_cont=="tratamento de efluentes")))
+trat12 = length(which((dados$ano==2012) & (dados$fonte_cont=="tratamento de efluentes")))
+trat13 = length(which((dados$ano==2013) & (dados$fonte_cont=="tratamento de efluentes")))
+trat14 = length(which((dados$ano==2014) & (dados$fonte_cont=="tratamento de efluentes")))
+trat15 = length(which((dados$ano==2015) & (dados$fonte_cont=="tratamento de efluentes")))
+trat16 = length(which((dados$ano==2016) & (dados$fonte_cont=="tratamento de efluentes")))
+
+
+arm=c(arm11, arm12,arm13,arm14,arm15,arm16)
+desc=c(desc11,desc12,desc13,desc14,desc15,desc16)
+descon=c(descon11,descon12,descon13,descon14,descon15,descon16)
+inf=c(inf11,inf12,inf13,inf14,inf15,inf16)
+man=c(man11,man12,man13,man14,man15,man16)
+pro=c(pro11,pro12,pro13,pro14,pro15,pro16)
+trat=c(trat11,trat12,trat13,trat14,trat15,trat16)
+
+Quantidade <- as.numeric(cbind(c(arm,desc,descon,inf,man,pro,trat)))
+
+Ano <- cbind(c(x1, x1, x1, x1,x1,x1,x1))
+Fonte = NULL
+Fonte[1:6] <- c("armazenagem e outros")
+Fonte[7:12] <- c("descarte e outros")
+Fonte[13:18] <- c("desconhecida")
+Fonte[19:24] <- c("infiltração")
+Fonte[25:30] <- c("manutenção")
+Fonte[31:36] <- c("produção e outros")
+Fonte[37:42] <- c("tratamento de efluentes")
+
+
+
+Tabela <- cbind(as.numeric(Quantidade), Ano, Fonte)
+
+Tabela <- data.frame(Tabela)
+
+ggplot(data = Tabela, aes(x=Ano, y=Quantidade, color=Fonte)) +
+  geom_line()+ geom_point() + labs(title="Quantidade de Registros de Fonte de Contaminação por Ano", x="Ano",y = "Número de registros")
+
+```
+Figura 4: Quantidade de registros por fonte de contaminação, por ano. Armazenagem e outros é a fonte de comunicação que mais se destaca e o número de registros tem aumentado a cada ano.
+
+# Conclusão
+
+   Por meio das análises descritivas, temos indícios que o número de registros de áreas contaminadas na cidade de Campinas tende a aumentar nos próximos anos, porém não podemos afirmar isso estatisticamente. É necessária uma análise estatística mais aprofundada para fazer previsões e inferências.  
+   Notamos que o número de registros é maior em postos de combustível e tivemos um crescimento notável para o número de registros em indústrias também. Temos um número muito maior de áreas contaminadas por armazenagem do que por outras fontes, nota-se um salto no número de registros cuja fonte de contaminação  é produção e outros.  
+   A proporção de registros de áreas contaminadas na região não central é muito maior do que na região central, mas não houve aumento considerável no decorrer dos anos.
