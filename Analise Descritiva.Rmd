@@ -44,8 +44,6 @@ fontsize: 11pt
 \end{titlepage}
 
 
----
-
 
 
 ```{r, echo=FALSE, warning=FALSE}
@@ -94,23 +92,22 @@ dados<- read.csv2("teste.csv",sep=",")
 
 # Introdução
 
-  O objetivo do trabalho é verificar se o número de áreas com solo contaminado em Campinas tende a aumentar nos próximos anos. Para isso, utilizaremos os dados da CETESB, que contém registros de 2011 a 2016 com informações sobre as áreas contaminadas. Conforme conversado com a cliente, as variáveis que podem explicar o número de áreas contaminadas são: região, tipo de atividade e fontes de contaminação. 
-
-  Faremos apenas uma análise descritiva dos dados (devido ao curto prazo de entrega do projeto), para começar a entender melhor como eles se comportam.
+  O objetivo do trabalho é verificar se o número de áreas com solo contaminado em Campinas tende a aumentar nos próximos anos. Para isso, utilizaremos os dados da CETESB, que contém registros de 2011 a 2016 com informações sobre as áreas contaminadas. Faremos apenas uma análise descritiva dos dados (devido ao curto prazo de entrega do projeto), para começar a entender melhor como eles se comportam.
 
 
 # Material
 
-O banco de dados utilizado nessa análise foi disponibilizado pela CETESB, e contém 832 registros de 2011 a 2016 com informações sobre as áreas com solo contaminado no municipio de Campinas. Para a realização da análise foi conversado com a cliente e selecionado as variáveis que poderiam explicar explicar o número de áreas contaminadas, sendo assim o banco de dados se reduziu em:
-nome;rua;	bairro;	atividade;	utm_e;	utm_n;	ano;	classif;	fonte_cont;	Região Central.
+O banco de dados utilizado nesse projeto foi disponibilizado pela CETESB, e contém 832 registros de 2011 a 2016 sobre as áreas com solo contaminado na cidade de Campinas. A base de dados bruta tem informações como endereço, coordenadas geográficas, ramo de atividade, classificação do solo, fonte de contaminação, *status*, ano, contaminante, identificação e outras. Como a base de dados foi enviada em arquivos separados por ano, foi necessário juntar tudo em um arquivo só e a partir disso toda a análise precisou ser feita por ano, uma vez que temos medidas repetidas. Além disso, foi preciso várias correções e agrupamento no banco de dados antes de iniciar o trabalho, pois havia muitos erros de digitação e muitas variáveis tinham mais de dez categorias, inviabilizando a análise.  
+
+Para a realização da análise descritiva foi conversado com a cliente e ela selecionou as variáveis de interesse, que poderiam explicar o número de áreas contaminadas. Sendo assim, o banco de dados se reduziu em: bairro (bairros de Campinas);	atividade (posto de combustível, indústria, comércio, resíduo);	ano (2011 a 2016);	fonte_cont (fontes de contaminação).  
  
- Na variável Região Central, consideramos os seguintes bairros como central: Botafogo, Cambuí, Centro, Guanabara, Vila Industrial, Vila Itapura, e como não central os demais.
+Foi criada a variável Região Central, pois tínhamos muitos bairros e a cliente sugeriu agrupá-los em duas categorias, uma vez que ela acredita que tenha diferença entre elas. Consideramos os seguintes bairros como central: Botafogo, Cambuí, Centro, Guanabara, Vila Industrial, Vila Itapura, e como não central os demais, totalizando 86 bairros registrados. Adicionalmente, a cliente disponibilizou somente o número de registros de 2002 a 2016, sem informações detalhadas sobre cada registro.
  
 # Análise Descritiva
 
-  A análise descritiva tem como objetivo começar a entender o comportamento dos dados, antes de fazer a modelagem estatística para previsão. Pela Figura 1, vemos que o número de registros de áreas contaminadas em Campinas vem aumentando ano após ano.
+  A análise descritiva é a fase inicial do estudo dos dados coletados e tem como objetivo começar a entender o comportamento dos dados. Pela Figura 1, vemos que o número de registros de áreas contaminadas em Campinas vem aumentando ano após ano.
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning=FALSE,fig.align='center', message=FALSE}
 
 n2011 = length(which(dados$ano==2011))
 n2012 = length(which(dados$ano==2012))
@@ -126,25 +123,25 @@ data1=data.frame(x1,y1)
 
 #plot(x, y, xlab = "Ano", ylab="Número de registros",main="Quantidade de registros por ano" )
 
-ggplot(data1,aes(x=x1,y=y1)) + geom_point(size=4) + labs(title="Quantidade de registros por ano",x="Ano", y = "Número de registros")
+ggplot(data1,aes(x=x1,y=y1)) + geom_point(size=4) + labs(title="Quantidade de registros por ano",x="Ano", y = "Número de registros")+ theme_bw()
 ```
 Figura 1: Gráfico de dispersão em que no eixo x temos o ano e no eixo y o número de registros. Note que o número de registros de áreas contaminadas em Campinas vem aumentando ano a ano.
 
 
 Temos um total de 832 registros em 6 anos, note pela Figura 2 que a maioria desses registros são postos de combustível.
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning=FALSE,fig.align='center', message=FALSE}
 #plot(dados$atividade, xlab="Atividade", ylab="Número de registros",main="Quantidade de registros por atividade")
 
-ggplot(dados, aes(as.factor(dados$atividade))) + geom_bar(width=0.6) + labs(title="Quantidade de registros por atividade", x="",y = "Número de registros")
+ggplot(dados, aes(as.factor(dados$atividade))) + geom_bar(width=0.6) + labs(title="Quantidade de registros por atividade", x="",y = "Número de registros")+ theme_bw()
 ```
-Figura 2: Quantidade de áreas contaminadas registradas nos seis anos, por atividade. O maior número de registros foram em postos de combustivél, seguido de indústria.
+Figura 2: Quantidade de áreas contaminadas registradas nos seis anos, por atividade. O maior número de registros foram em postos de combustível, seguido de indústria.
 
 
 
-   De acordo com a Figura 3, o número de registros em postos de combustível aumenta todo ano. Porém, vale ressaltar que a indústria teve um aumento maior que as outras atividades de 2013 para 2015. Isso causou uma mudança de patamar, uma vez que de 2011 a 2013 o número de registros estava em torno de 25 e passou para mais de 40 em 2015.
+   De acordo com a Figura 3, o número de registros em postos de combustível aumenta todo ano. Porém, vale ressaltar que na indústria aumentou mais que nas outras atividades em 2013 para 2015. Isso causou uma mudança de patamar, uma vez que de 2011 a 2013 o número de registros estava em torno de 25 e passou para mais de 40 em 2015.
 
-```{r, echo=FALSE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE,fig.align='center', message=FALSE}
 posto11 = length(which((dados$ano==2011) & (dados$atividade=="Posto de Combustível")))
 posto12 = length(which((dados$ano==2012) & (dados$atividade=="Posto de Combustível")))
 posto13 = length(which((dados$ano==2013) & (dados$atividade=="Posto de Combustível")))
@@ -195,15 +192,15 @@ Tabela <- cbind(as.numeric(Quantidade), Ano, Atividade)
 Tabela <- data.frame(Tabela)
 
 ggplot(data = Tabela, aes(x=Ano, y=Quantidade, color=Atividade)) +
-  geom_line()+ geom_point() + labs(title="Quantidade de Registros de Atividades por Ano", x="Ano",y = "Número de registros")
+  geom_line()+ geom_point() + labs(title="Quantidade de Registros de Atividades por Ano", x="Ano",y = "Número de registros")+ theme_bw()
 
 ```
-Figura 3: Quantidade de registros por atividade para cada ano. Note que o número de registros em Postos de combustível aumenta todo ano, porém atenção para o número de registros da indútria que teve um aumento alto de 2013 para 2015.
+Figura 3: Quantidade de registros por atividade para cada ano. Note que o número de registros em Postos de combustível aumenta todo ano, porém atenção para o número de registros da indústria que teve um salto de 2013 para 2015.
 
 
 Tabela 1: Porcentagem de registros nas regiões central e não central por ano. Observamos que proporção de registros por região variou muito pouco ao longo dos anos. 
 
-|      | Central | Não Central |
+|      | Central(%) | Não Central(%) |
 |-----:|--------:|------------:|
 | 2011 |    0,21 |        0,79 |
 | 2012 |    0,20 |        0,80 |
@@ -214,7 +211,7 @@ Tabela 1: Porcentagem de registros nas regiões central e não central por ano. 
 
 
 
-```{r, echo=FALSE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE,fig.align='center', message=FALSE}
 central11 = length(which((dados$ano==2011) & (dados$Região.Central=="S")))
 central12 = length(which((dados$ano==2012) & (dados$Região.Central=="S")))
 central13 = length(which((dados$ano==2013) & (dados$Região.Central=="S")))
@@ -241,9 +238,9 @@ ncentral2 = ncentral/y1
 
 ```
 
+Na Figura 4, vemos que a fonte de contaminação por armazenagem e outros é a que mais se destaca, pois possui maior número de registros, além de crescer conforme os anos. Para tratamento de efluentes, ocorreu apenas um registro em 2016 em uma indústria. Para fonte de contaminação por produção e outros houve um crescimento no número de registros a partir de 2013.
 
-
-```{r, echo=FALSE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE,fig.align='center', message=FALSE}
 arm11 = length(which((dados$ano==2011) & (dados$fonte_cont=="armazenagem e outros")))
 arm12 = length(which((dados$ano==2012) & (dados$fonte_cont=="armazenagem e outros")))
 arm13 = length(which((dados$ano==2013) & (dados$fonte_cont=="armazenagem e outros")))
@@ -321,13 +318,35 @@ Tabela <- cbind(as.numeric(Quantidade), Ano, Fonte)
 Tabela <- data.frame(Tabela)
 
 ggplot(data = Tabela, aes(x=Ano, y=Quantidade, color=Fonte)) +
-  geom_line()+ geom_point() + labs(title="Quantidade de Registros de Fonte de Contaminação por Ano", x="Ano",y = "Número de registros")
+  geom_line()+ geom_point() + labs(title="Quantidade de Registros de Fonte de Contaminação por Ano", x="Ano",y = "Número de registros")+ theme_bw()
 
 ```
-Figura 4: Quantidade de registros por fonte de contaminação, por ano. Armazenagem e outros é a fonte de comunicação que mais se destaca e o número de registros tem aumentado a cada ano.
+Figura 4: Quantidade de registros por fonte de contaminação, por ano. Armazenagem e outros é a fonte de comunicação que mais se destaca e o número de registros tem aumentado a cada ano.  
+
+O gráfico de tendência é simplesmente um gráfico de dispersão com as observações ligadas por retas. É uma ferramenta utilizada para estudar a variação de um processo ao longo do tempo. Na Figura 5 vemos que o número de ocorrências vem crescendo desde 2002, porém o registro só é realizado se a área está contaminada, não temos o total de áreas, assim não é possível inferir sobre a tendência dos próximos anos.  
+Ressaltando que para fazer uma previsão sobre o número de áreas contaminadas, precisamos de mais informações, como por exemplo registros de locais **não** contaminados, pois assim é possível avaliar as características que podem estar relacionadas com o aumento da chance de contaminação nos próximos anos.
+
+
+
+
+```{r, echo=FALSE, warning=FALSE,fig.align='center', message=FALSE}
+vetano=c(2002:2016)
+vetcont=c(7,10,34,45,46,85,91,100,111,120,129,133,140,153,157)
+
+data2<-data.frame(vetano,vetcont)
+
+ggplot(data2,aes(x=vetano,y=vetcont)) + geom_point(size=4) + geom_line() + labs(title="Quantidade de registros por ano",x="Ano", y = "Número de registros")+ theme_bw() +scale_x_continuous(breaks = vetano)
+
+ggplot(data2,aes(x=vetano,y=vetcont)) + geom_point(size=4) + geom_line() + labs(title="Quantidade de registros por ano",x="Ano", y = "Número de registros")+ theme_bw()
+
+```
+Figura 5: Gráfico de tendência que mostra o aumento no número de registros desde 2002, complementando a Figura 1.
+
+
+
 
 # Conclusão
 
-   Por meio das análises descritivas, temos indícios que o número de registros de áreas contaminadas na cidade de Campinas tende a aumentar nos próximos anos, porém não podemos afirmar isso estatisticamente. É necessária uma análise estatística mais aprofundada para fazer previsões e inferências.  
-   Notamos que o número de registros é maior em postos de combustível e tivemos um crescimento notável para o número de registros em indústrias também. Temos um número muito maior de áreas contaminadas por armazenagem do que por outras fontes, nota-se um salto no número de registros cuja fonte de contaminação  é produção e outros.  
-   A proporção de registros de áreas contaminadas na região não central é muito maior do que na região central, mas não houve aumento considerável no decorrer dos anos.
+   Notamos que o número de registros é maior em postos de combustível e tivemos um crescimento notável para o número de registros em indústrias também. Temos um número muito maior de registros de áreas contaminadas por armazenagem do que por outras fontes, nota-se também um salto no número de registros cuja fonte de contaminação é produção e outros em 2014.  
+   Para cada ano, a proporção de registros na região não central é maior do que na região central, mas não houve aumento considerável ao longo do tempo, vale lembrar que Campinas é uma cidade urbanizada e que isso não necessariamente significa que a taxa de ocorrência seja menor no centro, pois não sabemos o número total de estabelecimentos.  
+      Por meio das análises descritivas, temos indícios que o número de registros de áreas contaminadas na cidade de Campinas tende a aumentar nos próximos anos, mas não podemos afirmar isso estatisticamente, porque não sabemos se esse aumento foi porque a fiscalização aumentou, se o número de estabelecimentos aumentou, se existia casos de burlar o sistema, se todas as áreas contaminadas foram registradas, ou se realmente o número de áreas contaminadas de fato cresceu. Além disso, não temos informações prévias sobre os estabelecimentos para calcular a probabilidade de contaminação.  
