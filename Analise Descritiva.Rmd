@@ -1,16 +1,59 @@
 ---
-title: "ME810 - Áreas Contaminadas"
+title: ''
+geometry: left=30mm, right=20mm, top=30mm, bottom=20mm
+header-includes:
+- \usepackage{setspace}
+- \usepackage{pslatex}
+- \usepackage{subfigure}
+- \usepackage{subfigmat}
+- \usepackage{indentfirst}
+- \usepackage{float}
 output:
-  pdf_document: default
+  pdf_document:
+    fig_caption: yes
+    number_sections: yes
   html_document: default
+  mainfont: Times New Roman
+  fig_caption: yes
+setspace: dublespacing
+fontsize: 11pt
 ---
+
+\setlength{\parindent}{0.5cm}
+
+\begin{titlepage}
+\begin{center}
+{\large Universidade Estadual de Campinas - UNICAMP}\\[0.3cm]
+{\large Instituto de Matemática, Estatística e Computação Científica}\\[0.3cm]
+{\large Departamento de Estatística}\\[4.5cm]
+  
+
+
+
+{\bf \huge Análise de Áreas com Solo Contaminado em Campinas}\\[7.5cm]
+
+{\large Ana Flávia Polisel 157672}\\[0.3cm]
+{\large Bruna Nascimento Marques 135143}\\[0.3cm]
+{\large Melissa Pelermo 140830}\\[0.3cm]
+{\large Welligton Takao Tanaka 093259}\\[2.1cm]
+
+
+{\large Outubro/2017}\\[0.3cm]
+\end{center}
+
+\end{titlepage}
+
+
+---
+
+
 
 ```{r, echo=FALSE, warning=FALSE}
 library(readxl) #biblioteca para ler o excel
 library(knitr)
 library(ggplot2)
 
-data <- read_excel("C:/Users/ra157672/Desktop/Areas-Contaminadas---ME810-master/BASE.xlsx") #leitura dos dados
+data <- read_excel("BASE.xlsx") #leitura dos dados
 
 dados<-data.frame(data)
 
@@ -46,15 +89,23 @@ for (i in 1:832){
 #esses 2 comandos criam um arquivo em csv já pronto, pra nao ter que ficar rodando o excel sempre
 
 write.csv(dados1,file="teste.csv")
-dados<- read.csv2("C:/Users/ra157672/Desktop/Areas-Contaminadas---ME810-master/teste.csv",sep=",")
+dados<- read.csv2("teste.csv",sep=",")
 ```
 
 # Introdução
 
-  O objetivo do trabalho é verificar se o número de áreas com solo contaminado em Campinas tende a aumentar nos próximos anos. Para isso, utilizaremos os dados da CETESB, que contém registros de 2011 a 2016 com informações sobre as áreas contaminadas. Conforme conversado com a cliente, as variáveis que podem explicar o número de áreas contaminadas são: região, tipo de atividade e fontes de contaminação. Os bairros considerados como região central foram: Botafogo, Cambuí, Centro, Guanabara, Vila Industrial, Vila Itapura, e como não central os demais.
+  O objetivo do trabalho é verificar se o número de áreas com solo contaminado em Campinas tende a aumentar nos próximos anos. Para isso, utilizaremos os dados da CETESB, que contém registros de 2011 a 2016 com informações sobre as áreas contaminadas. Conforme conversado com a cliente, as variáveis que podem explicar o número de áreas contaminadas são: região, tipo de atividade e fontes de contaminação. 
 
   Faremos apenas uma análise descritiva dos dados (devido ao curto prazo de entrega do projeto), para começar a entender melhor como eles se comportam.
 
+
+# Material
+
+O banco de dados utilizado nessa análise foi disponibilizado pela CETESB, e contém 832 registros de 2011 a 2016 com informações sobre as áreas com solo contaminado no municipio de Campinas. Para a realização da análise foi conversado com a cliente e selecionado as variáveis que poderiam explicar explicar o número de áreas contaminadas, sendo assim o banco de dados se reduziu em:
+nome;rua;	bairro;	atividade;	utm_e;	utm_n;	ano;	classif;	fonte_cont;	Região Central.
+ 
+ Na variável Região Central, consideramos os seguintes bairros como central: Botafogo, Cambuí, Centro, Guanabara, Vila Industrial, Vila Itapura, e como não central os demais.
+ 
 # Análise Descritiva
 
   A análise descritiva tem como objetivo começar a entender o comportamento dos dados, antes de fazer a modelagem estatística para previsão. Pela Figura 1, vemos que o número de registros de áreas contaminadas em Campinas vem aumentando ano após ano.
